@@ -3,51 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Pergaminho Real - Criador de Jornal</title>
-    <!-- Bibliotecas externas: html2canvas para PNG, JSZip para arquivos .jmodel -->
+    <title>O Pergaminho Real - Criador de Jornal Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Pirata+One&family=Crimson+Text:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Pirata+One&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
             --parchment: #f4e4bc;
             --ink: #2c1e16;
+            --ink-light: #4a3324;
+            --accent: #8b2323;
         }
 
         body {
-            background-color: #1a1a1a;
+            /* Fundo simulando mesa de madeira escura */
+            background-color: #120e0b;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
             color: var(--ink);
             font-family: 'Crimson Text', serif;
+            overflow-x: hidden;
         }
 
         #newspaper-container {
-            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'), url('https://www.transparenttextures.com/patterns/stucco.png');
             background-color: var(--parchment);
-            width: 800px;
-            min-height: 1000px;
-            padding: 40px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            margin: 0 auto;
+            width: 850px;
+            min-height: 1100px;
+            padding: 50px 60px;
+            margin: 40px auto;
             position: relative;
-            border: 20px solid transparent;
-            border-image: url('https://www.transparenttextures.com/patterns/dark-leather.png') 30 round;
+            /* Efeito de borda gasta e sombreamento de papel antigo */
+            box-shadow: 
+                0 20px 50px rgba(0,0,0,0.8),
+                inset 0 0 100px rgba(139, 69, 19, 0.3),
+                inset 0 0 20px rgba(139, 69, 19, 0.5);
+            border: 2px solid #d4c4a1;
+            border-radius: 2px;
             box-sizing: border-box;
+            text-align: justify; /* Alinhamento elegante padrão */
+        }
+
+        /* Efeito sutil de tinta espalhada */
+        .ink-text {
+            text-shadow: 0px 0px 1px rgba(44, 30, 22, 0.4);
         }
 
         .header {
             text-align: center;
-            border-bottom: 4px double var(--ink);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            border-bottom: 6px double var(--ink);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            position: relative;
         }
 
         .newspaper-title {
             font-family: 'Pirata One', cursive;
-            font-size: 72px;
-            line-height: 1;
-            margin-bottom: 5px;
+            font-size: 85px;
+            line-height: 0.9;
+            margin-bottom: 10px;
             text-transform: uppercase;
+            color: var(--ink);
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
         }
 
         .newspaper-meta {
@@ -55,55 +73,80 @@
             display: flex;
             justify-content: space-between;
             border-top: 1px solid var(--ink);
-            padding: 5px 0;
-            font-size: 14px;
+            border-bottom: 1px solid var(--ink);
+            padding: 8px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--ink-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
         }
 
         .section-layout {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 30px;
         }
 
         .article {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             position: relative;
         }
 
         .article h2 {
             font-family: 'MedievalSharp', cursive;
-            font-size: 28px;
-            border-bottom: 1px solid #8b7355;
-            margin-bottom: 10px;
+            font-size: 32px;
+            border-bottom: 2px solid rgba(139, 115, 85, 0.3);
+            margin-bottom: 15px;
+            line-height: 1.1;
+            color: var(--ink);
         }
+
+        /* Destaques customizados gerados pelo WYSIWYG */
+        b, strong { font-weight: 700; color: #000; }
+        i, em { font-style: italic; color: var(--ink-light); }
+        u { text-decoration-color: var(--accent); }
 
         .editable {
-            min-height: 1.5em; /* Garante que não suma se vazio */
+            min-height: 1.5em;
+            transition: background 0.2s;
+            outline: none;
         }
 
-        .editable:hover {
-            outline: 2px dashed #8b7355;
+        .editable:hover, .editable:focus {
+            background-color: rgba(255, 255, 255, 0.3);
             cursor: text;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
         }
 
         .image-placeholder {
             width: 100%;
-            height: 200px;
-            background-color: rgba(0,0,0,0.05);
-            border: 1px dashed var(--ink);
+            height: 220px;
+            background-color: rgba(0,0,0,0.03);
+            border: 2px dashed rgba(44, 30, 22, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
             cursor: pointer;
             position: relative;
-            overflow: hidden; /* Corta a imagem se passar da borda */
-            margin-bottom: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border-radius: 2px;
+            transition: border 0.3s;
+        }
+
+        .image-placeholder:hover {
+            border-color: var(--ink);
         }
 
         .placeholder-text {
             z-index: 1;
             pointer-events: none;
+            font-family: 'MedievalSharp', cursive;
+            opacity: 0.6;
         }
 
         .user-image {
@@ -115,9 +158,11 @@
             width: auto;
             height: auto;
             max-width: none;
-            filter: sepia(1) contrast(0.8) brightness(0.9);
+            /* Filtro melhorado para parecer ilustração antiga */
+            filter: sepia(0.8) contrast(1.1) brightness(0.85) saturate(0.8);
             cursor: grab;
             z-index: 0;
+            mix-blend-mode: multiply; /* Faz a imagem mesclar com a textura do papel */
         }
 
         .user-image:active {
@@ -126,14 +171,16 @@
 
         .img-controls {
             position: absolute;
-            bottom: 5px;
-            right: 5px;
+            bottom: 8px;
+            right: 8px;
             display: none;
-            background: rgba(0,0,0,0.7);
-            padding: 5px;
-            border-radius: 5px;
-            gap: 5px;
+            background: rgba(18, 14, 11, 0.85);
+            padding: 6px;
+            border-radius: 6px;
+            gap: 6px;
             z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
         }
 
         .image-placeholder:hover .img-controls {
@@ -141,119 +188,245 @@
         }
 
         .img-controls button {
-            background: white;
-            border: none;
-            border-radius: 3px;
+            background: #f4e4bc;
+            color: var(--ink);
+            border: 1px solid var(--ink);
+            border-radius: 4px;
             cursor: pointer;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .img-controls button:hover {
+            background: #fff;
+            transform: scale(1.1);
+        }
+
+        .drop-cap::first-letter {
+            font-family: 'Pirata One', cursive;
+            float: left;
+            font-size: 75px;
+            line-height: 60px;
+            padding-top: 8px;
+            padding-right: 8px;
+            padding-left: 0;
+            color: var(--ink);
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+        }
+
+        .divider-ornament {
+            text-align: center;
+            font-size: 24px;
+            color: var(--ink-light);
+            margin: 20px 0;
+            position: relative;
+            user-select: none;
+        }
+
+        /* Painel Lateral Premium (Glassmorphism) */
+        .glass-panel {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(20, 15, 10, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+            max-height: 95vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            width: 240px;
+        }
+
+        .panel-title {
+            color: #d4c4a1;
+            font-family: 'MedievalSharp', cursive;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 196, 161, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .btn {
+            background: linear-gradient(to bottom, #5c3a21, #3e2716);
+            color: #e8dcc5;
+            padding: 10px 15px;
+            border: 1px solid #2a1a0e;
+            border-radius: 6px;
+            font-family: 'MedievalSharp', cursive;
+            transition: all 0.2s;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 6px rgba(0,0,0,0.4);
+            text-align: left;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to bottom, #724829, #4f321c);
+            transform: translateY(-2px);
+            color: #fff;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 6px 12px rgba(0,0,0,0.5);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-danger { background: linear-gradient(to bottom, #8b2323, #5c1717); }
+        .btn-danger:hover { background: linear-gradient(to bottom, #a32e2e, #7a1f1f); }
+        
+        .btn-success { background: linear-gradient(to bottom, #2d5a27, #1e3d1a); border-color: #0f1f0d;}
+        .btn-success:hover { background: linear-gradient(to bottom, #3b7533, #264d21); }
+
+        .btn-info { background: linear-gradient(to bottom, #2b4c7e, #1c3253); border-color: #0e192a; }
+        .btn-info:hover { background: linear-gradient(to bottom, #3863a3, #24416b); }
+
+        .remove-btn {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            background: #8b2323;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            border: 2px solid var(--parchment);
+        }
+
+        .article:hover .remove-btn, .divider-ornament:hover .remove-btn {
+            display: flex;
+        }
+
+        /* WYSIWYG Toolbar Flutuante */
+        #format-toolbar {
+            display: none;
+            position: absolute;
+            background: rgba(20, 15, 10, 0.95);
+            border: 1px solid #d4c4a1;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            gap: 4px;
+        }
+
+        #format-toolbar button {
+            background: transparent;
+            color: #e8dcc5;
+            border: none;
+            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-family: 'Crimson Text', serif;
+            font-size: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
         }
 
-        .img-controls button:hover {
-            background: #ddd;
-        }
-
-        .drop-cap::first-letter {
-            font-family: 'Pirata One', cursive;
-            float: left;
-            font-size: 60px;
-            line-height: 50px;
-            padding-top: 4px;
-            padding-right: 8px;
-            padding-left: 3px;
-        }
-
-        .btn-panel {
-            position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .btn {
-            background: #8b4513;
+        #format-toolbar button:hover {
+            background: rgba(212, 196, 161, 0.2);
             color: #fff;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-family: 'MedievalSharp', cursive;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            text-align: center;
-            font-size: 14px;
         }
 
-        .btn:hover {
-            background: #a0522d;
-            transform: scale(1.05);
-        }
-
-        .btn-group {
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 10px;
-            margin-bottom: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .remove-btn {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ff4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 20;
-        }
-
-        .article:hover .remove-btn {
-            display: flex;
+        .toolbar-divider {
+            width: 1px;
+            background: rgba(212, 196, 161, 0.3);
+            margin: 0 4px;
         }
 
         @media print {
-            .btn-panel { display: none; }
+            .glass-panel, #format-toolbar { display: none !important; }
+            body { background: none; }
+            #newspaper-container { box-shadow: none; margin: 0; }
         }
     </style>
 </head>
 <body class="p-8">
 
-    <div class="btn-panel">
-        <div class="btn-group">
-            <button class="btn" onclick="clearNewspaper()">🧹 Limpar Pergaminho</button>
-            <button class="btn" onclick="addArticle('main')">📜 Nova Matéria</button>
-            <button class="btn" onclick="addArticle('sidebar')">🕯️ Nota Lateral</button>
+    <!-- Menu Flutuante de Formatação de Texto -->
+    <div id="format-toolbar" class="flex items-center">
+        <button onclick="formatText('bold')" title="Negrito" class="font-bold">B</button>
+        <button onclick="formatText('italic')" title="Itálico" class="italic">I</button>
+        <button onclick="formatText('underline')" title="Sublinhado" class="underline">U</button>
+        <div class="toolbar-divider"></div>
+        <button onclick="formatText('justifyLeft')" title="Alinhar à Esquerda">⬅</button>
+        <button onclick="formatText('justifyCenter')" title="Centralizar">⬇</button>
+        <button onclick="formatText('justifyRight')" title="Alinhar à Direita">➡</button>
+        <button onclick="formatText('justifyFull')" title="Justificar">⬄</button>
+    </div>
+
+    <!-- Painel Lateral Glassmorphism -->
+    <div class="glass-panel">
+        <h2 class="panel-title">Ferramentas Reais</h2>
+        
+        <div class="flex flex-col gap-2">
+            <button class="btn btn-danger" onclick="clearNewspaper()">
+                <span>🧹</span> Limpar Pergaminho
+            </button>
+        </div>
+
+        <div class="flex flex-col gap-2 mt-2">
+            <div class="text-[11px] text-[#d4c4a1] uppercase tracking-wider mb-1 opacity-70">Elementos</div>
+            <button class="btn" onclick="addArticle('main')">
+                <span>📜</span> Nova Matéria (Principal)
+            </button>
+            <button class="btn" onclick="addArticle('sidebar')">
+                <span>🕯️</span> Nota Lateral
+            </button>
+            <button class="btn" onclick="addDivider('main')">
+                <span>❦</span> Inserir Divisor
+            </button>
         </div>
         
-        <div class="btn-group">
-            <button class="btn" onclick="triggerImport()" style="background: #4a5568;">📥 Importar (.jmodel)</button>
-            <button class="btn" onclick="exportModel()" style="background: #2b6cb0;">📤 Exportar (.jmodel)</button>
+        <div class="flex flex-col gap-2 mt-2">
+            <div class="text-[11px] text-[#d4c4a1] uppercase tracking-wider mb-1 opacity-70">Ficheiros</div>
+            <button class="btn btn-info" onclick="triggerImport()">
+                <span>📥</span> Importar (.jmodel)
+            </button>
+            <button class="btn btn-info" onclick="exportModel()">
+                <span>📤</span> Exportar (.jmodel)
+            </button>
             <input type="file" id="import-input" class="hidden" accept=".jmodel,.zip" onchange="handleImport(event)">
         </div>
 
-        <button class="btn" onclick="downloadNewspaper()" style="background: #228b22;">📸 Baixar Imagem PNG</button>
-        
-        <div class="text-white text-xs text-center mt-2 opacity-50">Clique no texto para editar</div>
+        <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-[rgba(212,196,161,0.2)]">
+            <button class="btn btn-success justify-center text-lg font-bold py-3" onclick="downloadNewspaper()">
+                📸 Gerar Jornal (PNG)
+            </button>
+            <div class="text-[#d4c4a1] text-xs text-center mt-1 opacity-60">
+                Selecione textos no papel para formatá-los.
+            </div>
+        </div>
     </div>
 
-    <div id="newspaper-container">
+    <div id="newspaper-container" class="ink-text">
         <!-- Cabeçalho -->
         <div class="header">
             <h1 id="header-title" class="newspaper-title editable" contenteditable="true">O Pergaminho Real</h1>
@@ -267,8 +440,8 @@
         <div class="section-layout">
             <!-- Coluna Principal -->
             <div id="main-column">
-                <div class="article">
-                    <div class="remove-btn" onclick="this.parentElement.remove()">✕</div>
+                <div class="article type-article">
+                    <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
                     <h2 class="editable" contenteditable="true">Dragão Avistado nas Colinas do Norte</h2>
                     <div class="image-placeholder" onclick="triggerUpload(this, event)">
                         <span class="placeholder-text">[Clique para adicionar imagem]</span>
@@ -278,15 +451,41 @@
                         Os camponeses da vila de Oakhaven juram ter visto uma besta alada cuspindo fogo sobre as pastagens durante o último solstício. O Lorde local convocou cavaleiros para uma patrulha, mas apenas cinzas foram encontradas. Alguns dizem ser um sinal dos deuses, outros apenas um incêndio florestal mal explicado.
                     </p>
                 </div>
+                
+                <div class="divider-ornament type-divider">
+                    <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                    ❦ ❧ ❦
+                </div>
+                
+                <div class="article type-article">
+                    <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                    <h2 class="editable" contenteditable="true">Torneio Real Anunciado</h2>
+                    <p class="editable" contenteditable="true">
+                        Sua Majestade decreta que no próximo mês lunar haverá justas e banquetes. Cavaleiros de todos os reinos estão convidados a provar o seu valor em troca da mão da princesa ou um baú de ouro.
+                    </p>
+                </div>
             </div>
 
             <!-- Coluna Lateral -->
             <div id="sidebar-column">
-                <div class="article">
-                    <div class="remove-btn" onclick="this.parentElement.remove()">✕</div>
-                    <h2 class="editable" contenteditable="true" style="font-size: 20px;">Procura-se: Mago</h2>
-                    <p class="editable" contenteditable="true" style="font-size: 14px;">
-                        Recompensa de 500 moedas de ouro para quem encontrar o Alquimista desaparecido. Deve saber lidar com poções explosivas.
+                <div class="article type-article">
+                    <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                    <h2 class="editable" contenteditable="true" style="font-size: 22px;">Procura-se: Mago</h2>
+                    <p class="editable" contenteditable="true" style="font-size: 15px;">
+                        Recompensa de <b>500 moedas de ouro</b> para quem encontrar o Alquimista desaparecido. Deve saber lidar com poções explosivas.
+                    </p>
+                </div>
+
+                <div class="divider-ornament type-divider" style="font-size: 18px;">
+                    <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                    ❖ ❖ ❖
+                </div>
+                
+                <div class="article type-article">
+                    <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                    <h2 class="editable" contenteditable="true" style="font-size: 22px;">Preço do Trigo</h2>
+                    <p class="editable" contenteditable="true" style="font-size: 15px;">
+                        A colheita minguou. O saco de farinha subiu 3 moedas de cobre. Pede-se paciência aos plebeus.
                     </p>
                 </div>
             </div>
@@ -294,6 +493,54 @@
     </div>
 
     <script>
+        // --- SISTEMA DE TOOLBAR WYSIWYG ---
+        const toolbar = document.getElementById('format-toolbar');
+
+        document.addEventListener('selectionchange', () => {
+            const selection = window.getSelection();
+            
+            // Verifica se há texto selecionado e se não está vazio
+            if (selection.rangeCount > 0 && !selection.isCollapsed) {
+                let node = selection.anchorNode;
+                // Sobe na árvore para ver se está dentro de um .editable
+                while (node && node.nodeType !== Node.ELEMENT_NODE) {
+                    node = node.parentNode;
+                }
+                
+                if (node && node.closest('.editable')) {
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    
+                    toolbar.style.display = 'flex';
+                    // Posiciona a toolbar logo acima da seleção
+                    toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
+                    // Centraliza a toolbar em relação à seleção
+                    let leftPos = rect.left + window.scrollX + (rect.width / 2) - (toolbar.offsetWidth / 2);
+                    // Impede que saia da tela
+                    leftPos = Math.max(10, Math.min(leftPos, window.innerWidth - toolbar.offsetWidth - 10));
+                    toolbar.style.left = `${leftPos}px`;
+                    return;
+                }
+            }
+            toolbar.style.display = 'none';
+        });
+
+        // Ocultar barra ao clicar fora
+        document.addEventListener('mousedown', (e) => {
+            if (!toolbar.contains(e.target) && window.getSelection().isCollapsed) {
+                toolbar.style.display = 'none';
+            }
+        });
+
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            // Mantém o foco e a seleção após formatar
+            const selection = window.getSelection();
+            if (selection.anchorNode && selection.anchorNode.closest('.editable')) {
+                selection.anchorNode.closest('.editable').focus();
+            }
+        }
+
         // --- SISTEMA DE ARRASTO DA IMAGEM ---
         let isDragging = false;
         let currentImg = null;
@@ -320,7 +567,7 @@
 
         function setupDrag(img) {
             img.addEventListener('mousedown', (e) => {
-                e.preventDefault(); // Evita o comportamento padrão do navegador
+                e.preventDefault();
                 isDragging = true;
                 currentImg = img;
                 startX = e.clientX;
@@ -345,7 +592,7 @@
             const img = placeholder.querySelector('.user-image');
             if (img) {
                 let scale = parseFloat(img.getAttribute('data-scale') || 1);
-                scale = Math.min(10, Math.max(0.1, scale + delta)); // Limites de zoom (0.1x a 10x)
+                scale = Math.min(10, Math.max(0.1, scale + delta));
                 img.setAttribute('data-scale', scale);
                 updateTransform(img);
             }
@@ -358,46 +605,54 @@
             placeholder.querySelector('input[type="file"]').click();
         }
 
-        // Limpar o jornal para um arquivo em branco
+        // --- MANIPULAÇÃO DO DOM (Adicionar/Limpar) ---
         function clearNewspaper() {
-            if(confirm("Deseja realmente limpar tudo? Todas as matérias serão apagadas.")) {
+            if(confirm("Deseja realmente varrer este pergaminho? Toda a tinta será lavada.")) {
                 document.getElementById('main-column').innerHTML = '';
                 document.getElementById('sidebar-column').innerHTML = '';
             }
         }
 
-        // Adiciona uma nova secção de artigo
         function addArticle(target) {
             const container = document.getElementById(target === 'main' ? 'main-column' : 'sidebar-column');
             const article = document.createElement('div');
-            article.className = 'article';
+            article.className = 'article type-article';
             
-            const fontSize = target === 'main' ? '28px' : '20px';
-            const bodySize = target === 'main' ? '16px' : '14px';
+            const fontSize = target === 'main' ? '32px' : '22px';
+            const bodySize = target === 'main' ? '16px' : '15px';
             const dropCap = target === 'main' ? 'drop-cap' : '';
 
             article.innerHTML = `
-                <div class="remove-btn" onclick="this.parentElement.remove()">✕</div>
-                <h2 class="editable" contenteditable="true" style="font-size: ${fontSize};">Título da Matéria</h2>
+                <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                <h2 class="editable" contenteditable="true" style="font-size: ${fontSize};">Título da Nova Matéria</h2>
                 <div class="image-placeholder" onclick="triggerUpload(this, event)">
                     <span class="placeholder-text">[Clique para adicionar imagem]</span>
                     <input type="file" class="hidden" accept="image/*" onchange="handleImage(this)">
                 </div>
                 <p class="${dropCap} editable" contenteditable="true" style="font-size: ${bodySize};">
-                    Escreva aqui os detalhes da notícia.
+                    Escreva aqui os detalhes da notícia com vossa caligrafia. Use palavras de outrora para deleite da corte.
                 </p>
             `;
             container.appendChild(article);
         }
 
-        // Acciona o selector de ficheiros de imagem
+        function addDivider(target) {
+            const container = document.getElementById(target === 'main' ? 'main-column' : 'sidebar-column');
+            const divider = document.createElement('div');
+            divider.className = 'divider-ornament type-divider';
+            divider.innerHTML = `
+                <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                ❦ ❧ ❦
+            `;
+            container.appendChild(divider);
+        }
+
         function triggerUpload(el, event) {
-            if (event && event.target.closest('.img-controls')) return; // Evita abrir ao clicar nos controles
-            if (el.querySelector('.user-image')) return; // Evita abrir se já existe imagem
+            if (event && event.target.closest('.img-controls')) return;
+            if (el.querySelector('.user-image')) return;
             el.querySelector('input').click();
         }
 
-        // Processa a imagem carregada na página
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -418,13 +673,15 @@
             }
         }
 
-        // --- SISTEMA DE EXPORTAÇÃO (.jmodel) ---
+        // Inicializa drag em imagens existentes (se houver no HTML padrão)
+        document.querySelectorAll('.user-image').forEach(setupDrag);
+
+        // --- SISTEMA DE EXPORTAÇÃO PRO (.jmodel) ---
         async function exportModel() {
             const zip = new JSZip();
             const imgFolder = zip.folder("imagens");
             const dataFolder = zip.folder("data");
 
-            // Coleta dados do Cabeçalho
             const modelData = {
                 header: {
                     title: document.getElementById('header-title').innerHTML,
@@ -438,58 +695,60 @@
 
             let imgCounter = 0;
 
-            // Função para extrair artigos de uma coluna
-            function extractArticles(columnId, targetArray) {
-                const articles = document.getElementById(columnId).querySelectorAll('.article');
-                articles.forEach((art) => {
-                    const titleEl = art.querySelector('h2');
-                    const textEl = art.querySelector('p');
-                    const imgEl = art.querySelector('.user-image');
+            function extractContent(columnId, targetArray) {
+                const elements = document.getElementById(columnId).children;
+                
+                Array.from(elements).forEach((el) => {
+                    if (el.classList.contains('type-article')) {
+                        const titleEl = el.querySelector('h2');
+                        const textEl = el.querySelector('p');
+                        const imgEl = el.querySelector('.user-image');
 
-                    let articleObj = {
-                        title: titleEl ? titleEl.innerHTML : '',
-                        text: textEl ? textEl.innerHTML : '',
-                        image: null,
-                        imgData: null
-                    };
-
-                    // Se houver imagem base64, salva no ZIP com os dados de edição
-                    if (imgEl && imgEl.src.startsWith('data:image')) {
-                        const base64Data = imgEl.src.split(',')[1];
-                        const imgName = `img_${imgCounter++}.png`;
-                        imgFolder.file(imgName, base64Data, {base64: true});
-                        articleObj.image = imgName;
-                        articleObj.imgData = {
-                            x: imgEl.getAttribute('data-x') || 0,
-                            y: imgEl.getAttribute('data-y') || 0,
-                            scale: imgEl.getAttribute('data-scale') || 1
+                        let articleObj = {
+                            type: 'article',
+                            // Usamos innerHTML para salvar BOLD, ITALIC e formatações!
+                            title: titleEl ? titleEl.innerHTML : '',
+                            text: textEl ? textEl.innerHTML : '',
+                            image: null,
+                            imgData: null
                         };
-                    }
 
-                    targetArray.push(articleObj);
+                        if (imgEl && imgEl.src.startsWith('data:image')) {
+                            const base64Data = imgEl.src.split(',')[1];
+                            const imgName = `img_${imgCounter++}.png`;
+                            imgFolder.file(imgName, base64Data, {base64: true});
+                            articleObj.image = imgName;
+                            articleObj.imgData = {
+                                x: imgEl.getAttribute('data-x') || 0,
+                                y: imgEl.getAttribute('data-y') || 0,
+                                scale: imgEl.getAttribute('data-scale') || 1
+                            };
+                        }
+                        targetArray.push(articleObj);
+                    } else if (el.classList.contains('type-divider')) {
+                        targetArray.push({ type: 'divider' });
+                    }
                 });
             }
 
-            extractArticles('main-column', modelData.main);
-            extractArticles('sidebar-column', modelData.sidebar);
+            extractContent('main-column', modelData.main);
+            extractContent('sidebar-column', modelData.sidebar);
 
-            // Salva a estrutura em texto no JSON
             dataFolder.file("modelo.json", JSON.stringify(modelData, null, 2));
 
-            // Gera e baixa o arquivo
             try {
                 const content = await zip.generateAsync({type: "blob"});
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(content);
-                link.download = "meu_jornal.jmodel";
+                link.download = "pergaminho_real.jmodel";
                 link.click();
             } catch (err) {
                 console.error("Erro ao exportar modelo:", err);
-                alert("Falha ao exportar modelo.");
+                alert("Falha ao selar o pergaminho.");
             }
         }
 
-        // --- SISTEMA DE IMPORTAÇÃO (.jmodel) ---
+        // --- SISTEMA DE IMPORTAÇÃO PRO (.jmodel) ---
         function triggerImport() {
             document.getElementById('import-input').click();
         }
@@ -508,108 +767,124 @@
                 const jsonText = await jsonFile.async("string");
                 const modelData = JSON.parse(jsonText);
 
-                // Restaura Cabeçalho
                 document.getElementById('header-title').innerHTML = modelData.header.title;
                 document.getElementById('meta-date').innerHTML = modelData.header.date;
                 document.getElementById('meta-edition').innerHTML = modelData.header.edition;
                 document.getElementById('meta-location').innerHTML = modelData.header.location;
 
-                // Limpa Colunas Atuais
                 document.getElementById('main-column').innerHTML = '';
                 document.getElementById('sidebar-column').innerHTML = '';
 
-                // Função para reconstruir os artigos
-                async function rebuildArticles(columnId, articlesArray, isMain) {
+                async function rebuildContent(columnId, itemsArray, isMain) {
                     const container = document.getElementById(columnId);
                     
-                    for (const art of articlesArray) {
-                        const article = document.createElement('div');
-                        article.className = 'article';
-                        
-                        const fontSize = isMain ? '28px' : '20px';
-                        const bodySize = isMain ? '16px' : '14px';
-                        const dropCap = isMain ? 'drop-cap' : '';
+                    for (const item of itemsArray) {
+                        if (item.type === 'article') {
+                            const article = document.createElement('div');
+                            article.className = 'article type-article';
+                            
+                            const fontSize = isMain ? '32px' : '22px';
+                            const bodySize = isMain ? '16px' : '15px';
+                            const dropCap = isMain ? 'drop-cap' : '';
 
-                        let imageHTML = `<span class="placeholder-text">[Clique para adicionar imagem]</span>`;
-                        
-                        // Restaura a imagem a partir da pasta /imagens do ZIP com os transformadores
-                        if (art.image) {
-                            const imgFile = loadedZip.file(`imagens/${art.image}`);
-                            if (imgFile) {
-                                const base64Data = await imgFile.async("base64");
-                                const x = art.imgData ? art.imgData.x : 0;
-                                const y = art.imgData ? art.imgData.y : 0;
-                                const scale = art.imgData ? art.imgData.scale : 1;
-                                
-                                imageHTML = `
-                                    <img src="data:image/png;base64,${base64Data}" alt="Ilustração" class="user-image" data-x="${x}" data-y="${y}" data-scale="${scale}" style="transform: translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale});">
-                                    <div class="img-controls" contenteditable="false">
-                                        <button title="Aumentar Zoom" onclick="zoomImg(this, 0.1, event)">➕</button>
-                                        <button title="Diminuir Zoom" onclick="zoomImg(this, -0.1, event)">➖</button>
-                                        <button title="Trocar Imagem" onclick="changeImg(this, event)">🔄</button>
-                                    </div>
-                                `;
+                            let imageHTML = `<span class="placeholder-text">[Clique para adicionar imagem]</span>`;
+                            
+                            if (item.image) {
+                                const imgFile = loadedZip.file(`imagens/${item.image}`);
+                                if (imgFile) {
+                                    const base64Data = await imgFile.async("base64");
+                                    const x = item.imgData ? item.imgData.x : 0;
+                                    const y = item.imgData ? item.imgData.y : 0;
+                                    const scale = item.imgData ? item.imgData.scale : 1;
+                                    
+                                    imageHTML = `
+                                        <img src="data:image/png;base64,${base64Data}" alt="Ilustração" class="user-image" data-x="${x}" data-y="${y}" data-scale="${scale}" style="transform: translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scale});">
+                                        <div class="img-controls" contenteditable="false">
+                                            <button title="Aumentar Zoom" onclick="zoomImg(this, 0.1, event)">➕</button>
+                                            <button title="Diminuir Zoom" onclick="zoomImg(this, -0.1, event)">➖</button>
+                                            <button title="Trocar Imagem" onclick="changeImg(this, event)">🔄</button>
+                                        </div>
+                                    `;
+                                }
                             }
-                        }
 
-                        article.innerHTML = `
-                            <div class="remove-btn" onclick="this.parentElement.remove()">✕</div>
-                            <h2 class="editable" contenteditable="true" style="font-size: ${fontSize};">${art.title}</h2>
-                            <div class="image-placeholder" onclick="triggerUpload(this, event)">
-                                ${imageHTML}
-                                <input type="file" class="hidden" accept="image/*" onchange="handleImage(this)">
-                            </div>
-                            <p class="${dropCap} editable" contenteditable="true" style="font-size: ${bodySize};">
-                                ${art.text}
-                            </p>
-                        `;
-                        container.appendChild(article);
-                        
-                        // Reconecta os eventos de arrasto à nova imagem se houver
-                        const newImg = article.querySelector('.user-image');
-                        if (newImg) setupDrag(newImg);
+                            article.innerHTML = `
+                                <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                                <h2 class="editable" contenteditable="true" style="font-size: ${fontSize};">${item.title}</h2>
+                                <div class="image-placeholder" onclick="triggerUpload(this, event)">
+                                    ${imageHTML}
+                                    <input type="file" class="hidden" accept="image/*" onchange="handleImage(this)">
+                                </div>
+                                <p class="${dropCap} editable" contenteditable="true" style="font-size: ${bodySize};">
+                                    ${item.text}
+                                </p>
+                            `;
+                            container.appendChild(article);
+                            
+                            const newImg = article.querySelector('.user-image');
+                            if (newImg) setupDrag(newImg);
+
+                        } else if (item.type === 'divider') {
+                            const divider = document.createElement('div');
+                            divider.className = 'divider-ornament type-divider';
+                            if(!isMain) divider.style.fontSize = '18px';
+                            divider.innerHTML = `
+                                <div class="remove-btn" onclick="this.parentElement.remove()" title="Remover">✕</div>
+                                ${isMain ? '❦ ❧ ❦' : '❖ ❖ ❖'}
+                            `;
+                            container.appendChild(divider);
+                        }
                     }
                 }
 
-                await rebuildArticles('main-column', modelData.main, true);
-                await rebuildArticles('sidebar-column', modelData.sidebar, false);
+                await rebuildContent('main-column', modelData.main, true);
+                await rebuildContent('sidebar-column', modelData.sidebar, false);
 
             } catch (err) {
                 console.error(err);
-                alert("Erro ao importar: O arquivo selecionado pode não ser um modelo válido (.jmodel).");
+                alert("Erro ao decifrar o modelo. Os deuses não permitem a leitura deste ficheiro.");
             }
-
-            // Reseta o input de arquivo
             event.target.value = '';
         }
 
-        // Converte o contentor em imagem PNG e faz o download
+        // Converte e baixa como PNG
         async function downloadNewspaper() {
             const container = document.getElementById('newspaper-container');
             const btns = document.querySelectorAll('.remove-btn');
             const imgControls = document.querySelectorAll('.img-controls');
             
-            // Esconde botões flutuantes durante a captura de imagem
+            // Limpa seleções ativas para não sair azul na foto
+            window.getSelection().removeAllRanges();
+            document.getElementById('format-toolbar').style.display = 'none';
+
             btns.forEach(b => b.style.display = 'none');
             imgControls.forEach(c => c.style.display = 'none');
             
+            // Remove a borda pontilhada dos lugares sem foto temporariamente
+            const emptyPlaceholders = document.querySelectorAll('.image-placeholder');
+            emptyPlaceholders.forEach(p => {
+                if(!p.querySelector('.user-image')) p.style.border = 'none';
+            });
+
             try {
                 const canvas = await html2canvas(container, {
                     scale: 2,
                     useCORS: true,
-                    backgroundColor: '#f4e4bc'
+                    backgroundColor: '#120e0b' // Mantém o fundo da mesa para uma borda bonita se houver overflow
                 });
                 
                 const link = document.createElement('a');
-                link.download = 'jornal-medieval.png';
+                link.download = 'jornal-medieval-pro.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (err) {
-                console.error("Erro ao gerar imagem:", err);
+                console.error("Erro ao pintar quadro:", err);
             } finally {
-                // Restaura a visibilidade dos botões
                 btns.forEach(b => b.style.display = '');
                 imgControls.forEach(c => c.style.display = '');
+                emptyPlaceholders.forEach(p => {
+                    if(!p.querySelector('.user-image')) p.style.border = '';
+                });
             }
         }
     </script>
