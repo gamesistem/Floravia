@@ -29,8 +29,8 @@
 </nav>
 
 <div class="page-header">
-  <h1>🛒 Loja Floravia</h1>
-  <p>Escolha seus produtos e melhore sua experiência no servidor</p>
+  <h1>Loja Floravia</h1>
+  <p>Gaste seus Florins e melhore sua experiencia em Falck Craft e AurionMC</p>
 </div>
 
 <!-- FILTROS -->
@@ -97,7 +97,7 @@
     renderizarProdutos();
     atualizarBadge();
   }).catch(() => {
-    document.getElementById('produtosGrid').innerHTML = '<p class="no-products">Erro ao carregar produtos. Tente novamente mais tarde.</p>';
+    document.getElementById('produtosGrid').innerHTML = '<p class="no-products">Nao foi possivel carregar o produtos.txt. Verifique se o arquivo esta no repositorio.</p>';
   });
 
   function renderizarProdutos() {
@@ -130,23 +130,23 @@
   window.abrirModal = function(nome) {
     const produto = todosOsProdutos.find(p => p.nome === nome);
     if (!produto) return;
-    const iconeEmoji = getIconeEmoji(produto.icone);
+    const iconeLabel = getIconeEmoji(produto.icone);
     document.getElementById('modalBody').innerHTML = `
       <div class="modal-header" style="border-color: ${produto.cor}">
-        <div class="modal-icon" style="background: ${produto.cor}20; color: ${produto.cor}">${iconeEmoji}</div>
+        <div class="modal-icon" style="background: ${produto.cor}20; color: ${produto.cor}; font-size:0.85rem; font-weight:700; letter-spacing:0.05em">${iconeLabel}</div>
         <div class="modal-title-area">
           <span class="tag-categoria">${produto.categoria}</span>
           <h2>${produto.nome}</h2>
-          ${produto.destaque === 'sim' ? '<span class="badge-destaque">⭐ Destaque</span>' : ''}
+          ${produto.destaque === 'sim' ? '<span class="badge-destaque">Destaque</span>' : ''}
         </div>
-        <div class="modal-preco" style="color: ${produto.cor}">R$ ${produto.preco}</div>
+        <div class="modal-preco" style="color: ${produto.cor}">Fl. ${produto.preco}</div>
       </div>
       <div class="modal-desc">${produto.descricao}</div>
       <div class="modal-acoes">
         ${produto.disponivel === 'sim'
-          ? `<button class="btn-primary" onclick="adicionarCarrinho('${produto.nome}'); fecharModal()">🛒 Adicionar ao Carrinho</button>
+          ? `<button class="btn-primary" onclick="adicionarCarrinho('${produto.nome}'); fecharModal()">Adicionar ao Carrinho</button>
              <a href="carrinho.html" class="btn-outline">Ver Carrinho</a>`
-          : '<button class="btn-disabled" disabled>Indisponível no momento</button>'
+          : '<button class="btn-disabled" disabled>Indisponivel no momento</button>'
         }
       </div>
     `;
