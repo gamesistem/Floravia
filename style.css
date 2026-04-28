@@ -431,6 +431,21 @@ body {
   filter: drop-shadow(0 0 8px var(--produto-cor, var(--accent)));
 }
 
+.card-icon-label {
+  display: inline-block;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  margin-bottom: 0.9rem;
+  opacity: 0.85;
+  box-shadow: 0 0 8px currentColor22;
+}
+
 .card-cat {
   font-size: 0.7rem;
   font-weight: 700;
