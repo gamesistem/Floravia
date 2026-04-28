@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loja - Floravia Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<nav class="navbar">
+  <div class="nav-logo">
+    <div class="logo-icon">⚔</div>
+    <span class="logo-text">Floravia</span>
+    <span class="logo-sub">STORE</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="loja.html" class="active">Loja</a></li>
+    <li><a href="carrinho.html">🛒 Carrinho <span class="cart-badge" id="cartBadge">0</span></a></li>
+  </ul>
+  <a href="https://discord.gg/vR4H8276V" target="_blank" class="btn-discord">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.082.114 18.105.132 18.12a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    Discord
+  </a>
+</nav>
+
+<div class="page-header">
+  <h1>🛒 Loja Floravia</h1>
+  <p>Escolha seus produtos e melhore sua experiência no servidor</p>
+</div>
+
+<!-- FILTROS -->
+<div class="filtros-bar">
+  <button class="filtro-btn active" data-cat="todos">Todos</button>
+  <button class="filtro-btn" data-cat="ranks">👑 Ranks</button>
+  <button class="filtro-btn" data-cat="kits">🎒 Kits</button>
+  <button class="filtro-btn" data-cat="itens">⚔️ Itens</button>
+  <button class="filtro-btn" data-cat="cosmeticos">✨ Cosméticos</button>
+  <button class="filtro-btn" data-cat="boosters">⚡ Boosters</button>
+</div>
+
+<div class="loja-container">
+  <div class="produtos-grid" id="produtosGrid">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Carregando produtos...</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRODUTO -->
+<div class="modal-overlay" id="modalOverlay" onclick="fecharModal()"></div>
+<div class="modal" id="modalProduto">
+  <button class="modal-close" onclick="fecharModal()">✕</button>
+  <div class="modal-body" id="modalBody"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-logo">
+      <div class="logo-icon">⚔</div>
+      <span>Floravia Store</span>
+    </div>
+    <p>© 2025 Floravia. Todos os direitos reservados.</p>
+    <div class="footer-links">
+      <a href="index.html">Início</a>
+      <a href="loja.html">Loja</a>
+      <a href="carrinho.html">Carrinho</a>
+      <a href="https://discord.gg/vR4H8276V" target="_blank">Discord</a>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  // Partículas
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+    p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+    container.appendChild(p);
+  }
+
+  let todosOsProdutos = [];
+  let categoriaAtiva = 'todos';
+
+  carregarProdutos().then(produtos => {
+    todosOsProdutos = produtos;
+    renderizarProdutos();
+    atualizarBadge();
+  }).catch(() => {
+    document.getElementById('produtosGrid').innerHTML = '<p class="no-products">Erro ao carregar produtos. Tente novamente mais tarde.</p>';
+  });
+
+  function renderizarProdutos() {
+    const grid = document.getElementById('produtosGrid');
+    let filtrados = todosOsProdutos;
+    if (categoriaAtiva !== 'todos') {
+      filtrados = todosOsProdutos.filter(p => p.categoria === categoriaAtiva);
+    }
+    grid.innerHTML = '';
+    if (filtrados.length === 0) {
+      grid.innerHTML = '<p class="no-products">Nenhum produto nesta categoria.</p>';
+      return;
+    }
+    filtrados.forEach(p => {
+      grid.innerHTML += criarCardProduto(p);
+    });
+  }
+
+  // Filtros
+  document.querySelectorAll('.filtro-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      categoriaAtiva = btn.dataset.cat;
+      renderizarProdutos();
+    });
+  });
+
+  // Modal
+  window.abrirModal = function(nome) {
+    const produto = todosOsProdutos.find(p => p.nome === nome);
+    if (!produto) return;
+    const iconeEmoji = getIconeEmoji(produto.icone);
+    document.getElementById('modalBody').innerHTML = `
+      <div class="modal-header" style="border-color: ${produto.cor}">
+        <div class="modal-icon" style="background: ${produto.cor}20; color: ${produto.cor}">${iconeEmoji}</div>
+        <div class="modal-title-area">
+          <span class="tag-categoria">${produto.categoria}</span>
+          <h2>${produto.nome}</h2>
+          ${produto.destaque === 'sim' ? '<span class="badge-destaque">⭐ Destaque</span>' : ''}
+        </div>
+        <div class="modal-preco" style="color: ${produto.cor}">R$ ${produto.preco}</div>
+      </div>
+      <div class="modal-desc">${produto.descricao}</div>
+      <div class="modal-acoes">
+        ${produto.disponivel === 'sim'
+          ? `<button class="btn-primary" onclick="adicionarCarrinho('${produto.nome}'); fecharModal()">🛒 Adicionar ao Carrinho</button>
+             <a href="carrinho.html" class="btn-outline">Ver Carrinho</a>`
+          : '<button class="btn-disabled" disabled>Indisponível no momento</button>'
+        }
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modalProduto').classList.add('active');
+  };
+
+  window.fecharModal = function() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.getElementById('modalProduto').classList.remove('active');
+  };
+</script>
+</body>
+</html>

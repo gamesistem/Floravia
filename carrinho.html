@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carrinho - Floravia Store</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<nav class="navbar">
+  <div class="nav-logo">
+    <div class="logo-icon">⚔</div>
+    <span class="logo-text">Floravia</span>
+    <span class="logo-sub">STORE</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="loja.html">Loja</a></li>
+    <li><a href="carrinho.html" class="active">🛒 Carrinho <span class="cart-badge" id="cartBadge">0</span></a></li>
+  </ul>
+  <a href="https://discord.gg/vR4H8276V" target="_blank" class="btn-discord">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.082.114 18.105.132 18.12a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+    Discord
+  </a>
+</nav>
+
+<div class="page-header">
+  <h1>🛒 Seu Carrinho</h1>
+  <p>Revise seus itens e finalize a compra via Discord</p>
+</div>
+
+<div class="carrinho-container">
+  <!-- ITENS DO CARRINHO -->
+  <div class="carrinho-itens" id="carrinhoItens">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- RESUMO -->
+  <div class="carrinho-resumo">
+    <div class="resumo-card">
+      <h3>Resumo do Pedido</h3>
+      <div class="resumo-linha">
+        <span>Subtotal</span>
+        <span id="subtotal">R$ 0,00</span>
+      </div>
+      <div class="resumo-linha">
+        <span>Taxa</span>
+        <span class="verde">Grátis</span>
+      </div>
+      <div class="resumo-total">
+        <span>Total</span>
+        <span id="total">R$ 0,00</span>
+      </div>
+
+      <div class="checkout-section">
+        <h4>Como finalizar a compra:</h4>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <p>Informe seu nick do Minecraft</p>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <p>Clique em "Finalizar no Discord"</p>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <p>Envie a mensagem gerada no canal #compras</p>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <p>Aguarde a confirmação da equipe</p>
+          </div>
+        </div>
+
+        <div class="nick-input-area">
+          <label for="nickInput">Seu Nick no Minecraft:</label>
+          <input type="text" id="nickInput" placeholder="SeuNickAqui" maxlength="16" />
+        </div>
+
+        <button class="btn-finalizar" id="btnFinalizar" onclick="finalizarCompra()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.082.114 18.105.132 18.12a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Finalizar no Discord
+        </button>
+
+        <button class="btn-limpar" onclick="limparCarrinho()">🗑 Limpar Carrinho</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAÇÃO -->
+<div class="modal-overlay" id="modalConfirmOverlay"></div>
+<div class="modal" id="modalConfirm">
+  <button class="modal-close" onclick="fecharConfirm()">✕</button>
+  <div class="modal-body">
+    <div class="confirm-icon">✅</div>
+    <h2>Pedido Gerado!</h2>
+    <p>Copie a mensagem abaixo e envie no canal <strong>#compras</strong> do nosso Discord:</p>
+    <div class="mensagem-discord" id="mensagemDiscord"></div>
+    <div class="confirm-btns">
+      <button class="btn-copy" onclick="copiarMensagem()">📋 Copiar Mensagem</button>
+      <a href="https://discord.gg/vR4H8276V" target="_blank" class="btn-primary">Ir para o Discord</a>
+    </div>
+    <p class="confirm-obs">Após enviar a mensagem, aguarde um atendente confirmar e enviar o link de pagamento.</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-logo">
+      <div class="logo-icon">⚔</div>
+      <span>Floravia Store</span>
+    </div>
+    <p>© 2025 Floravia. Todos os direitos reservados.</p>
+    <div class="footer-links">
+      <a href="index.html">Início</a>
+      <a href="loja.html">Loja</a>
+      <a href="carrinho.html">Carrinho</a>
+      <a href="https://discord.gg/vR4H8276V" target="_blank">Discord</a>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+    p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+    container.appendChild(p);
+  }
+
+  function renderCarrinho() {
+    const carrinho = getCarrinho();
+    const grid = document.getElementById('carrinhoItens');
+    atualizarBadge();
+
+    if (carrinho.length === 0) {
+      grid.innerHTML = `
+        <div class="carrinho-vazio">
+          <div class="vazio-icon">🛒</div>
+          <h3>Seu carrinho está vazio</h3>
+          <p>Adicione produtos da nossa loja para continuar.</p>
+          <a href="loja.html" class="btn-primary">Ver Produtos</a>
+        </div>
+      `;
+      document.getElementById('subtotal').textContent = 'R$ 0,00';
+      document.getElementById('total').textContent = 'R$ 0,00';
+      document.getElementById('btnFinalizar').disabled = true;
+      return;
+    }
+
+    document.getElementById('btnFinalizar').disabled = false;
+    grid.innerHTML = '';
+    let total = 0;
+
+    carrinho.forEach((item, i) => {
+      const preco = parseFloat(item.preco);
+      total += preco;
+      const icone = getIconeEmoji(item.icone);
+      grid.innerHTML += `
+        <div class="carrinho-item" style="border-left: 3px solid ${item.cor || '#00d4ff'}">
+          <div class="item-icon" style="color: ${item.cor || '#00d4ff'}">${icone}</div>
+          <div class="item-info">
+            <h4>${item.nome}</h4>
+            <span class="item-cat">${item.categoria}</span>
+          </div>
+          <div class="item-preco">R$ ${item.preco}</div>
+          <button class="item-remove" onclick="removerItem(${i})">✕</button>
+        </div>
+      `;
+    });
+
+    const totalStr = total.toFixed(2).replace('.', ',');
+    document.getElementById('subtotal').textContent = `R$ ${totalStr}`;
+    document.getElementById('total').textContent = `R$ ${totalStr}`;
+  }
+
+  window.removerItem = function(index) {
+    const carrinho = getCarrinho();
+    carrinho.splice(index, 1);
+    salvarCarrinho(carrinho);
+    renderCarrinho();
+  };
+
+  window.limparCarrinho = function() {
+    if (confirm('Tem certeza que deseja limpar o carrinho?')) {
+      salvarCarrinho([]);
+      renderCarrinho();
+    }
+  };
+
+  window.finalizarCompra = function() {
+    const nick = document.getElementById('nickInput').value.trim();
+    if (!nick) {
+      alert('Por favor, informe seu nick do Minecraft!');
+      document.getElementById('nickInput').focus();
+      return;
+    }
+
+    const carrinho = getCarrinho();
+    if (carrinho.length === 0) return;
+
+    let total = carrinho.reduce((s, i) => s + parseFloat(i.preco), 0);
+    const itensLista = carrinho.map(i => `• ${i.nome} - R$ ${i.preco}`).join('\n');
+    
+    const mensagem = `📦 **NOVO PEDIDO - FLORAVIA STORE**\n\n👤 **Nick Minecraft:** \`${nick}\`\n\n🛒 **Itens do Pedido:**\n${itensLista}\n\n💰 **Total: R$ ${total.toFixed(2).replace('.', ',')}\`\n\n⏰ Pedido feito em: ${new Date().toLocaleString('pt-BR')}`;
+
+    document.getElementById('mensagemDiscord').textContent = mensagem;
+    document.getElementById('modalConfirmOverlay').classList.add('active');
+    document.getElementById('modalConfirm').classList.add('active');
+  };
+
+  window.copiarMensagem = function() {
+    const texto = document.getElementById('mensagemDiscord').textContent;
+    navigator.clipboard.writeText(texto).then(() => {
+      const btn = document.querySelector('.btn-copy');
+      btn.textContent = '✅ Copiado!';
+      setTimeout(() => btn.textContent = '📋 Copiar Mensagem', 2000);
+    });
+  };
+
+  window.fecharConfirm = function() {
+    document.getElementById('modalConfirmOverlay').classList.remove('active');
+    document.getElementById('modalConfirm').classList.remove('active');
+  };
+
+  carregarProdutos().then(() => renderCarrinho());
+</script>
+</body>
+</html>
