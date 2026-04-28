@@ -29,8 +29,8 @@
 </nav>
 
 <div class="page-header">
-  <h1>🛒 Seu Carrinho</h1>
-  <p>Revise seus itens e finalize a compra via Discord</p>
+  <h1>Seu Carrinho</h1>
+  <p>Revise seus itens e finalize o pedido de Florins via Discord</p>
 </div>
 
 <div class="carrinho-container">
@@ -71,11 +71,11 @@
           </div>
           <div class="step">
             <div class="step-num">3</div>
-            <p>Envie a mensagem gerada no canal #compras</p>
+            <p>Envie a mensagem gerada no canal #loja do Imperio</p>
           </div>
           <div class="step">
             <div class="step-num">4</div>
-            <p>Aguarde a confirmação da equipe</p>
+            <p>Aguarde a equipe debitar seus Florins e entregar o item</p>
           </div>
         </div>
 
@@ -100,15 +100,15 @@
 <div class="modal" id="modalConfirm">
   <button class="modal-close" onclick="fecharConfirm()">✕</button>
   <div class="modal-body">
-    <div class="confirm-icon">✅</div>
+    <div class="confirm-icon">OK</div>
     <h2>Pedido Gerado!</h2>
-    <p>Copie a mensagem abaixo e envie no canal <strong>#compras</strong> do nosso Discord:</p>
+    <p>Copie a mensagem abaixo e envie no canal <strong>#loja</strong> do nosso Discord:</p>
     <div class="mensagem-discord" id="mensagemDiscord"></div>
     <div class="confirm-btns">
-      <button class="btn-copy" onclick="copiarMensagem()">📋 Copiar Mensagem</button>
+      <button class="btn-copy" onclick="copiarMensagem()">Copiar Mensagem</button>
       <a href="https://discord.gg/vR4H8276V" target="_blank" class="btn-primary">Ir para o Discord</a>
     </div>
-    <p class="confirm-obs">Após enviar a mensagem, aguarde um atendente confirmar e enviar o link de pagamento.</p>
+    <p class="confirm-obs">Apos enviar a mensagem, aguarde um atendente debitar seus Florins e entregar os itens.</p>
   </div>
 </div>
 
@@ -168,23 +168,23 @@
     carrinho.forEach((item, i) => {
       const preco = parseFloat(item.preco);
       total += preco;
-      const icone = getIconeEmoji(item.icone);
+      const label = getIconeEmoji(item.icone);
       grid.innerHTML += `
         <div class="carrinho-item" style="border-left: 3px solid ${item.cor || '#00d4ff'}">
-          <div class="item-icon" style="color: ${item.cor || '#00d4ff'}">${icone}</div>
+          <div class="item-icon" style="color: ${item.cor || '#00d4ff'}; font-size:0.75rem; font-weight:700; letter-spacing:0.05em">${label}</div>
           <div class="item-info">
             <h4>${item.nome}</h4>
             <span class="item-cat">${item.categoria}</span>
           </div>
-          <div class="item-preco">R$ ${item.preco}</div>
-          <button class="item-remove" onclick="removerItem(${i})">✕</button>
+          <div class="item-preco">Fl. ${item.preco}</div>
+          <button class="item-remove" onclick="removerItem(${i})">X</button>
         </div>
       `;
     });
 
     const totalStr = total.toFixed(2).replace('.', ',');
-    document.getElementById('subtotal').textContent = `R$ ${totalStr}`;
-    document.getElementById('total').textContent = `R$ ${totalStr}`;
+    document.getElementById('subtotal').textContent = `Fl. ${totalStr}`;
+    document.getElementById('total').textContent = `Fl. ${totalStr}`;
   }
 
   window.removerItem = function(index) {
@@ -215,7 +215,7 @@
     let total = carrinho.reduce((s, i) => s + parseFloat(i.preco), 0);
     const itensLista = carrinho.map(i => `• ${i.nome} - R$ ${i.preco}`).join('\n');
     
-    const mensagem = `📦 **NOVO PEDIDO - FLORAVIA STORE**\n\n👤 **Nick Minecraft:** \`${nick}\`\n\n🛒 **Itens do Pedido:**\n${itensLista}\n\n💰 **Total: R$ ${total.toFixed(2).replace('.', ',')}\`\n\n⏰ Pedido feito em: ${new Date().toLocaleString('pt-BR')}`;
+    const mensagem = `**NOVO PEDIDO - LOJA FLORAVIA**\n\nNick Minecraft: ${nick}\n\nItens do Pedido:\n${itensLista}\n\nTotal: Fl. ${total.toFixed(2).replace('.', ',')}\n\nPedido feito em: ${new Date().toLocaleString('pt-BR')}`;
 
     document.getElementById('mensagemDiscord').textContent = mensagem;
     document.getElementById('modalConfirmOverlay').classList.add('active');
