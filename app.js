@@ -2,13 +2,9 @@
 // FLORAVIA STORE - JavaScript Principal
 // =============================================
 
-// URL do arquivo de produtos no GitHub Releases (RAW)
-// O site busca APENAS o arquivo .txt, não outros arquivos do release
-const PRODUTOS_URL = 'https://github.com/gamesistem/Floravia/releases/download/Loja/produtos.txt';
-
-// Fallback caso o GitHub não responda (CORS)
-// Use o raw do release asset via jsDelivr ou similar se necessário
-const PRODUTOS_URL_FALLBACK = 'https://raw.githubusercontent.com/gamesistem/Floravia/refs/heads/Loja/produtos.txt';
+// Busca o produtos.txt pelo caminho relativo, igual aos outros arquivos do site
+const PRODUTOS_URL = 'produtos.txt';
+const PRODUTOS_URL_FALLBACK = null;
 
 // =============================================
 // CARRINHO - LocalStorage
@@ -112,9 +108,8 @@ async function carregarProdutos() {
   if (_cachePromise) return _cachePromise;
 
   _cachePromise = (async () => {
-    // Tenta URL principal primeiro
-    const urls = [PRODUTOS_URL, PRODUTOS_URL_FALLBACK];
-    
+    const urls = [PRODUTOS_URL, PRODUTOS_URL_FALLBACK].filter(Boolean);
+
     for (const url of urls) {
       try {
         const res = await fetch(url, { cache: 'no-cache' });
@@ -130,11 +125,8 @@ async function carregarProdutos() {
       }
     }
 
-    // Se ambas falharem, retorna produtos de demonstração
-    console.warn('Usando produtos de demonstração (falha ao carregar .txt)');
-    const demo = getDemoProdutos();
-    window._produtosCarregados = demo;
-    return demo;
+    window._produtosCarregados = [];
+    throw new Error('Nao foi possivel carregar produtos.txt.');
   })();
 
   return _cachePromise;
@@ -153,44 +145,45 @@ function getDemoProdutos() {
 }
 
 // =============================================
-// ÍCONES MINECRAFT → EMOJI
+// ÍCONES MINECRAFT → LABEL DE TEXTO
 // =============================================
 
 function getIconeEmoji(icone) {
+  // Retorna uma label curta baseada no nome do item (sem emoji)
   const mapa = {
-    diamond: '💎',
-    netherite_ingot: '⬛',
-    iron_sword: '⚔️',
-    diamond_sword: '⚔️',
-    netherite_sword: '🗡️',
-    diamond_pickaxe: '⛏️',
-    iron_pickaxe: '⛏️',
-    bow: '🏹',
-    shield: '🛡️',
-    elytra: '🪶',
-    chest: '📦',
-    experience_bottle: '🧪',
-    name_tag: '🏷️',
-    gold_ingot: '🥇',
-    emerald: '💚',
-    sword: '⚔️',
-    pickaxe: '⛏️',
-    armor: '🛡️',
-    helmet: '⛑️',
-    potion: '🧪',
-    apple: '🍎',
-    book: '📖',
-    map: '🗺️',
-    compass: '🧭',
-    crown: '👑',
-    star: '⭐',
+    diamond: 'DIA',
+    netherite_ingot: 'NTH',
+    iron_sword: 'ESP',
+    diamond_sword: 'ESP',
+    netherite_sword: 'ESP',
+    diamond_pickaxe: 'PIC',
+    iron_pickaxe: 'PIC',
+    bow: 'ARC',
+    shield: 'ESC',
+    elytra: 'ELY',
+    chest: 'BAU',
+    experience_bottle: 'XP',
+    name_tag: 'TAG',
+    gold_ingot: 'OUR',
+    emerald: 'ESM',
+    sword: 'ESP',
+    pickaxe: 'PIC',
+    armor: 'ARM',
+    helmet: 'ELM',
+    potion: 'POC',
+    apple: 'MA',
+    book: 'LIV',
+    map: 'MAP',
+    compass: 'BUS',
+    crown: 'COR',
+    star: 'EST',
   };
-  if (!icone) return '📦';
+  if (!icone) return 'ITEM';
   const key = icone.toLowerCase();
   for (const [k, v] of Object.entries(mapa)) {
     if (key.includes(k)) return v;
   }
-  return '📦';
+  return 'ITEM';
 }
 
 // =============================================
@@ -198,18 +191,18 @@ function getIconeEmoji(icone) {
 // =============================================
 
 function criarCardProduto(p) {
-  const icone = getIconeEmoji(p.icone);
+  const label = getIconeEmoji(p.icone);
   const indisponivel = p.disponivel !== 'sim';
   return `
     <div class="produto-card ${indisponivel ? 'indisponivel' : ''}" style="--produto-cor: ${p.cor || '#00d4ff'}">
-      ${p.destaque === 'sim' ? '<div class="card-badge-destaque">⭐ Destaque</div>' : ''}
-      ${indisponivel ? '<div class="card-badge-off">Indisponível</div>' : ''}
-      <div class="card-icon">${icone}</div>
+      ${p.destaque === 'sim' ? '<div class="card-badge-destaque">Destaque</div>' : ''}
+      ${indisponivel ? '<div class="card-badge-off">Indisponivel</div>' : ''}
+      <div class="card-icon-label" style="color:${p.cor || '#00d4ff'}">${label}</div>
       <div class="card-cat">${p.categoria}</div>
       <h3 class="card-nome">${p.nome}</h3>
       <p class="card-desc">${p.descricao.length > 80 ? p.descricao.substring(0, 80) + '...' : p.descricao}</p>
       <div class="card-footer">
-        <span class="card-preco">R$ ${p.preco}</span>
+        <span class="card-preco">Fl. ${p.preco}</span>
         <div class="card-btns">
           <button class="btn-info" onclick="abrirModal ? abrirModal('${p.nome.replace(/'/g, "\\'")}') : null">Detalhes</button>
           ${!indisponivel
