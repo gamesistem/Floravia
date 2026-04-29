@@ -12,94 +12,14 @@
 # ====================================================
 
 [PRODUTO]
-NOME=VIP Floravia
-CATEGORIA=ranks
-PRECO=19.90
-DESCRICAO=Acesso ao cargo VIP no servidor! Inclui prefixo exclusivo no chat, acesso a comandos especiais como /fly no lobby, kit VIP mensal e muito mais!
-ICONE=diamond
-DESTAQUE=sim
-DISPONIVEL=sim
-COR=#00d4ff
-
-[PRODUTO]
-NOME=MVP Floravia
-CATEGORIA=ranks
-PRECO=39.90
-DESCRICAO=O melhor rank do servidor! Todos os benefícios do VIP + prefixo MVP dourado, acesso a mundos exclusivos, kit MVP semanal, partículas e muito mais!
-ICONE=netherite_ingot
-DESTAQUE=sim
-DISPONIVEL=sim
-COR=#FFD700
-
-[PRODUTO]
-NOME=Kit Guerreiro
+NOME=Kit Sobrevivência
 CATEGORIA=kits
-PRECO=9.90
-DESCRICAO=Kit completo para combate PvP! Inclui armadura de ferro encantada, espada afiada, arco e flechas, comida e poções de batalha.
-ICONE=iron_sword
-DESTAQUE=nao
-DISPONIVEL=sim
-COR=#C0C0C0
-
-[PRODUTO]
-NOME=Kit Minerador
-CATEGORIA=kits
-PRECO=7.90
-DESCRICAO=Tudo que você precisa para minerar! Picareta de diamante Fortune III, pá eficiente, tochas, comida e uma mochila para guardar os minérios.
-ICONE=diamond_pickaxe
-DESTAQUE=nao
-DISPONIVEL=sim
-COR=#44c767
-
-[PRODUTO]
-NOME=Espada Lendária
-CATEGORIA=itens
-PRECO=14.90
-DESCRICAO=Espada de Netherite com os melhores encantamentos: Afiação V, Aspecto de Fogo II, Golpe Crítico V e Inquebrável III. Uma arma devastadora!
-ICONE=netherite_sword
+PRECO=64.00
+DESCRICAO= Kit de sobrevivência floravíana, full set de ferro, espada de ferro, picareta de ferro e machado de ferro, além de 32 carnas de boi assadas.
+ICONE=sword
 DESTAQUE=sim
 DISPONIVEL=sim
-COR=#ff4444
-
-[PRODUTO]
-NOME=Elytra Personalizada
-CATEGORIA=cosmeticos
-PRECO=24.90
-DESCRICAO=Elytra com aparência exclusiva do servidor Floravia! Voe com estilo com as asas da Floravia. Item puramente cosmético, não afeta gameplay.
-ICONE=elytra
-DESTAQUE=nao
-DISPONIVEL=sim
-COR=#9b59b6
-
-[PRODUTO]
-NOME=Booster XP x2
-CATEGORIA=boosters
-PRECO=4.90
-DESCRICAO=Ative o dobro de XP por 24 horas! Aproveite para evoluir suas habilidades e encantamentos muito mais rápido no servidor.
-ICONE=experience_bottle
-DESTAQUE=nao
-DISPONIVEL=sim
-COR=#7ed321
-
-[PRODUTO]
-NOME=Booster Drops x3
-CATEGORIA=boosters
-PRECO=6.90
-DESCRICAO=Triple drops por 12 horas! Todos os mobs e blocos dropam 3x mais itens durante o período ativo. Ótimo para farmar recursos!
-ICONE=chest
-DESTAQUE=nao
-DISPONIVEL=nao
-COR=#e67e22
-
-[PRODUTO]
-NOME=Título Especial
-CATEGORIA=cosmeticos
-PRECO=12.90
-DESCRICAO=Escolha um título exclusivo para exibir no chat e acima do seu personagem. Mais de 20 títulos disponíveis para escolher após a compra!
-ICONE=name_tag
-DESTAQUE=nao
-DISPONIVEL=sim
-COR=#e91e8c
+COR=#00FFFF
 
 # ====================================================
 # FIM DO ARQUIVO - Não apague esta linha
