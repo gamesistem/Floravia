@@ -6,7 +6,7 @@
 # - Preencha os campos abaixo
 # - Categorias disponíveis: ranks, itens, kits, cosmeticos, boosters
 # - Para ícone, use o nome de um item do Minecraft (ex: diamond, sword, etc)
-# - Preço em R$ (ex: 19.90)
+# - Preço em Florians (ex: 19.90)
 # - Em DESTAQUE coloque: sim | nao
 # - Em DISPONIVEL coloque: sim | nao
 # ====================================================
