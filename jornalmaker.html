@@ -228,25 +228,87 @@
             user-select: none;
         }
 
+        /* Botão Hambúrguer */
+        #menu-toggle {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 200;
+            background: rgba(20, 15, 10, 0.85);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            transition: all 0.2s;
+        }
+
+        #menu-toggle:hover {
+            background: rgba(92, 58, 33, 0.9);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: scale(1.05);
+        }
+
+        #menu-toggle .bar {
+            width: 22px;
+            height: 2px;
+            background: #d4c4a1;
+            border-radius: 2px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        /* Animação X quando aberto */
+        #menu-toggle.open .bar:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        #menu-toggle.open .bar:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        #menu-toggle.open .bar:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
         /* Painel Lateral Premium (Glassmorphism) */
         .glass-panel {
             position: fixed;
             left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(20, 15, 10, 0.7);
-            backdrop-filter: blur(10px);
+            top: 80px;
+            background: rgba(20, 15, 10, 0.88);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 215, 0, 0.2);
             padding: 20px;
             border-radius: 12px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 100;
-            max-height: 95vh;
+            z-index: 150;
+            max-height: calc(95vh - 90px);
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.85);
             width: 240px;
+
+            /* Estado inicial: fechado */
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-20px) scale(0.97);
+            transform-origin: top left;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel.open {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateX(0) scale(1);
         }
 
         .panel-title {
@@ -382,8 +444,15 @@
         <button onclick="formatText('justifyFull')" title="Justificar">⬄</button>
     </div>
 
+    <!-- Botão Hambúrguer -->
+    <button id="menu-toggle" onclick="toggleMenu()" title="Ferramentas Reais" aria-label="Abrir menu">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </button>
+
     <!-- Painel Lateral Glassmorphism -->
-    <div class="glass-panel">
+    <div class="glass-panel" id="glass-panel">
         <h2 class="panel-title">Ferramentas Reais</h2>
         
         <div class="flex flex-col gap-2">
@@ -493,6 +562,25 @@
     </div>
 
     <script>
+        // --- MENU HAMBÚRGUER ---
+        function toggleMenu() {
+            const panel = document.getElementById('glass-panel');
+            const toggle = document.getElementById('menu-toggle');
+            const isOpen = panel.classList.contains('open');
+            panel.classList.toggle('open', !isOpen);
+            toggle.classList.toggle('open', !isOpen);
+        }
+
+        // Fecha o menu ao clicar fora dele
+        document.addEventListener('mousedown', (e) => {
+            const panel = document.getElementById('glass-panel');
+            const toggle = document.getElementById('menu-toggle');
+            if (panel.classList.contains('open') && !panel.contains(e.target) && !toggle.contains(e.target)) {
+                panel.classList.remove('open');
+                toggle.classList.remove('open');
+            }
+        });
+
         // --- SISTEMA DE TOOLBAR WYSIWYG ---
         const toolbar = document.getElementById('format-toolbar');
 
